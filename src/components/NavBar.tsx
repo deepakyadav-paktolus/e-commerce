@@ -31,7 +31,6 @@ const NavBar = () => {
   return (
     <header className="border-b">
       <nav className="h-16 flex items-center justify-between px-4 md:px-6">
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-2">
           <Image
             src="/logo.avif"
@@ -42,12 +41,9 @@ const NavBar = () => {
           <span className="text-xl font-semibold">ShopStore</span>
         </Link>
 
-        {/* Desktop Search */}
         <div className="hidden md:flex flex-1 justify-center px-6">
           <InputGroupDemo />
         </div>
-
-        {/* Desktop Nav */}
         <ul className="hidden md:flex gap-6 items-center">
           <li>
             <Link href="/">Home</Link>
@@ -67,8 +63,6 @@ const NavBar = () => {
         </ul>
 
         <div className="md:hidden">
-          {" "}
-          {/* <SearchIcon className="" /> */}
           <button
             className=""
             onClick={() =>setIsSearchOpen(!isSearchOpen)}
@@ -86,16 +80,12 @@ const NavBar = () => {
           </button>
         </div>
       </nav>
-      {/* Mobile Menu */}
         {
                 isSearchOpen ? <span className="md:hidden flex mb-3 justify-center"><InputGroupDemo  /> </span>:'' 
             }
            
       {isOpen && (
         <div className="md:hidden px-4 pb-4 space-y-4">
-          {/* Search */}
-
-          {/* Links */}
           <ul className="flex flex-col gap-4">
             <li>
               <Link href="/">Home</Link>
