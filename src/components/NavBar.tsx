@@ -29,14 +29,15 @@ const NavBar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
 
   return (
-    <header className="border-b">
+    <header className="border-b text-black sticky inset-0 top-0 bg-white border border-white/30 backdrop-blur-md  rounded">
       <nav className="h-16 flex items-center justify-between px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
-          <Image
-            src="/logo.avif"
+          <img
+          className="rounded-xl"
+            src="/logo.jpg"
             alt="ShopStore logo"
-            width={100}
-            height={24}
+            width={50}
+            height={50}
           />
           <span className="text-xl font-semibold">ShopStore</span>
         </Link>
@@ -60,6 +61,9 @@ const NavBar = () => {
           <li>
             <Link href="/orders">Orders</Link>
           </li>
+          <li>
+              <Link href="/checkout">CheckOut</Link>
+            </li>
         </ul>
 
         <div className="md:hidden">
@@ -101,6 +105,9 @@ const NavBar = () => {
             </li>
             <li>
               <Link href="/orders">Orders</Link>
+            </li>
+            <li>
+              <Link href="/checkout">CheckOut</Link>
             </li>
           </ul>
         </div>
