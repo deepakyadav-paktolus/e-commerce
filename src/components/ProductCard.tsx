@@ -59,7 +59,6 @@ const ProductCard = ({
   const discountedPrice = (price - (price * discountPercentage) / 100).toFixed(
     2,
   );
-  // const { addToCart } = useCart();
 
 
   return (
@@ -89,12 +88,6 @@ const ProductCard = ({
             {discountPercentage}% OFF
           </span>
         </div>
-        {/* <button 
-          onClick={() => addToCart(product)}
-          className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
-        >
-          Add to Cart
-        </button> */}
       </div>
     </Link>
   );

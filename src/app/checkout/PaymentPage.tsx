@@ -62,7 +62,6 @@ export default function PaymentPage({
         </CardContent>
       </Card>
 
-      {/* Dynamic Form */}
       {paymentMethod && (
         <Card>
           <CardHeader>
@@ -101,7 +100,6 @@ export default function PaymentPage({
         </Card>
       )}
 
-      {/* Total */}
       <Card>
         <CardContent className="flex justify-between py-6 text-lg">
           <span>Total</span>

@@ -1,7 +1,7 @@
 export interface Product {
   id: number;
   title: string;
-  name: string; // For cart compatibility
+  name: string;
   description: string;
   images: string[];
   category: string;
