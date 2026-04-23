@@ -1,119 +1,98 @@
 "use client";
 
+import { useState } from "react";
 import CartPage from "./CartPage";
 import FormPage from "./FormPage";
-import multiStep from "./multiStep";
-import { useState } from "react";
 import PaymentPage from "./PaymentPage";
+import useMultiStep from "./useMultiStep";
 import { toast } from "sonner";
+import { useCart } from "@/app/context/CartContext";
 
 interface Data {
-    name: string;
-    email: string;
-    phone: string;
-    address: string;
-    city: string;
-    state: string;
-    pincode: string;
-    country: string;
-    paymentMethod: string;
+  name: string;
+  email: string;
+  phone: string;
+  address: string;
+  city: string;
+  state: string;
+  pincode: string;
+  country: string;
+  paymentMethod: string;
 }
 
-type CartItem = {
-    id: number;
-    name: string;
-    price: number;
-    quantity: number;
-};
-
 const INITIAL_DATA: Data = {
-    name: "",
-    email: "",
-    phone: "",
-    address: "",
-    city: "",
-    state: "",
-    pincode: "",
-    country: "",
-    paymentMethod: "",
+  name: "",
+  email: "",
+  phone: "",
+  address: "",
+  city: "",
+  state: "",
+  pincode: "",
+  country: "",
+  paymentMethod: "",
 };
 
-const INITIAL_CART: CartItem[] = [
-    { id: 1, name: "Product 1", price: 499, quantity: 1 },
-    { id: 2, name: "Product 2", price: 500, quantity: 1 },
-];
+export default function CheckoutPage() {
+  const { cart, updateQuantity, removeItem } = useCart();
 
-const CheckoutPage = () => {
-    const [data, setData] = useState(INITIAL_DATA);
-    const [cart, setCart] = useState(INITIAL_CART);
+  const [data, setData] = useState<Data>(INITIAL_DATA);
 
-    const updateData = (fields: Partial<Data>) => {
-        setData((prev) => ({ ...prev, ...fields }));
-    };
+  const updateData = (fields: Partial<Data>) => {
+    setData((prev) => ({ ...prev, ...fields }));
+  };
 
-    const updateQuantity = (id: number, quantity: number) => {
-        setCart((prev) =>
-            prev.map((item) =>
-                item.id === id ? { ...item, quantity } : item
-            )
-        );
-    };
+  const total = cart.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0
+  );
 
-    const removeItem = (id: number) => {
-        setCart((prev) => prev.filter((item) => item.id !== id));
-    };
+  const {
+    step,
+    currentStep,
+    nextStep,
+    prevStep,
+    isFirstStep,
+    isLastStep,
+  } = useMultiStep([
+    <FormPage key="form" {...data} updateData={updateData} />,
 
-    const total = cart.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0
-    );
+    <CartPage
+      key="cart"
+      items={cart}
+      updateQuantity={updateQuantity}
+      removeItem={removeItem}
+    />,
 
-    const {
-        step,
-        totalSteps,
-        currentStep,
-        nextStep,
-        prevStep,
-        isFirstStep,
-        isLastStep,
-    } = multiStep([
-        <FormPage key="form" {...data} updateData={updateData} />,
-        <CartPage
-            key="cart"
-            items={cart}
-            updateQuantity={updateQuantity}
-            removeItem={removeItem}
-        />,
-        <PaymentPage
-            key="payment"
-            total={total}
-            paymentMethod={data.paymentMethod}
-            updateData={updateData}
-        />,
-    ]);
+    <PaymentPage
+      key="payment"
+      total={total}
+      paymentMethod={data.paymentMethod}
+      updateData={updateData}
+    />,
+  ]);
 
-    const handleSubmit = () => {
-        console.log("FINAL DATA:", data);
-        console.log("CART:", cart);
+  const handleSubmit = () => {
+    if (
+      !data.name ||
+      !data.email ||
+      !data.address ||
+      !data.paymentMethod
+    ) {
+      toast.error("Please fill all required fields");
+      return;
+    }
 
-      data ?  toast.success('Order placed successfully!', {
-            style: {
-                '--normal-bg': 'light-dark(var(--color-green-600), var(--color-green-400))',
-                '--normal-text': 'var(--color-white)',
-                '--normal-border': 'light-dark(var(--color-green-600), var(--color-green-400))'
-            } as React.CSSProperties
-        }): toast.error('Action failed!', {
-          style: {
-            '--normal-bg': 'light-dark(var(--color-red-600), var(--color-red-400))',
-            '--normal-text': 'var(--color-white)',
-            '--normal-border': 'light-dark(var(--color-red-600), var(--color-red-400))'
-          } as React.CSSProperties
-        })
-    };
+    if (cart.length === 0) {
+      toast.error("Cart is empty");
+      return;
+    }
 
-    return (
-        <div className="max-w-3xl mx-auto p-6 space-y-6">
-            <div className="flex items-center justify-center ">
+    toast.success("Order placed successfully 🚀");
+  };
+
+  return (
+    <div className="max-w-3xl mx-auto p-6 space-y-6">
+      <div className="flex items-center justify-center ">
                 {[0, 1, 2].map((i) => (
                     <div key={i} className="flex items-center">
                         <span
@@ -134,27 +113,25 @@ const CheckoutPage = () => {
                 ))}
             </div>
 
-            <div>{step}</div>
+      <div>{step}</div>
 
-            <div className="flex min-w-2xl justify-between">
-                {!isFirstStep && (
-                    <button
-                        className="border px-4 py-2 rounded"
-                        onClick={prevStep}
-                    >
-                        Previous
-                    </button>
-                )}
+      <div className="flex justify-end">
+        {!isFirstStep && (
+          <button
+            onClick={prevStep}
+            className="border px-4 py-2 rounded"
+          >
+            Previous
+          </button>
+        )}
 
-                <button
-                    className="border px-4 py-2 rounded"
-                    onClick={isLastStep ? handleSubmit : nextStep}
-                >
-                    {isLastStep ? "Submit" : "Next"}
-                </button>
-            </div>
-        </div>
-    );
-};
-
-export default CheckoutPage;
+        <button
+          onClick={isLastStep ? handleSubmit : nextStep}
+          className="border px-4 py-2 rounded"
+        >
+          {isLastStep ? "Submit" : "Next"}
+        </button>
+      </div>
+    </div>
+  );
+}

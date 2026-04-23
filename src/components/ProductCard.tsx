@@ -1,3 +1,4 @@
+"use client";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -19,6 +20,7 @@ interface CardProps {
   availabilityStatus: string;
   reviews: Review[];
   meta: Meta;
+  product: any;
 }
 
 interface Dimensions {
@@ -52,10 +54,13 @@ const ProductCard = ({
   stock,
   thumbnail,
   brand,
+  product
 }: CardProps) => {
   const discountedPrice = (price - (price * discountPercentage) / 100).toFixed(
     2,
   );
+  // const { addToCart } = useCart();
+
 
   return (
     <Link href={`/products/${id}`}>
@@ -84,9 +89,12 @@ const ProductCard = ({
             {discountPercentage}% OFF
           </span>
         </div>
-        <button className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
+        {/* <button 
+          onClick={() => addToCart(product)}
+          className="mt-4 w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
+        >
           Add to Cart
-        </button>
+        </button> */}
       </div>
     </Link>
   );

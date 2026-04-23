@@ -1,122 +1,113 @@
-import { Button } from "@/components/ui/button"
-import {
-    Card,
-    CardContent,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Separator } from "@/components/ui/separator"
-import { Payment } from "./Payment"
+"use client";
 
-type PaymentPageProps = {
-    total: number
-    paymentMethod: string
-    updateData: (data: { paymentMethod: string }) => void
-}
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+type Props = {
+  total: number;
+  paymentMethod: string;
+  updateData: (data: { paymentMethod: string }) => void;
+};
 
 export default function PaymentPage({
-    total,
-    paymentMethod,
-    updateData,
-}: PaymentPageProps) {
-    return (
-        <div className="max-w-3xl mx-auto p-6 space-y-6">
-            <Card>
-                <CardHeader>
-                    <CardTitle>Payment Method</CardTitle>
-                </CardHeader>
+  total,
+  paymentMethod,
+  updateData,
+}: Props) {
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    toast.success(`Paid using ${paymentMethod.toUpperCase()}`);
+  };
 
-                <CardContent>
-                    <RadioGroup
-                        value={paymentMethod}
-                        onValueChange={(value) =>
-                            updateData({ paymentMethod: value })
-                        }
-                        className="space-y-3"
-                    >
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="card" id="card" />
-                            <Label htmlFor="card">Credit / Debit Card</Label>
-                        </div>
+  return (
+    <div className="w-2xl mx-auto space-y-6">
+      <Card>
+        <CardHeader>
+          <CardTitle>Payment Method</CardTitle>
+        </CardHeader>
 
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="upi" id="upi" />
-                            <Label htmlFor="upi">UPI</Label>
-                        </div>
+        <CardContent>
+          <RadioGroup
+            value={paymentMethod}
+            onValueChange={(value) =>
+              updateData({ paymentMethod: value })
+            }
+            className="space-y-3"
+          >
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="card" id="card" />
+              <Label htmlFor="card">Card</Label>
+            </div>
 
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="cod" id="cod" />
-                            <Label htmlFor="cod">Cash on Delivery</Label>
-                        </div>
-                    </RadioGroup>
-                </CardContent>
-            </Card>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="upi" id="upi" />
+              <Label htmlFor="upi">UPI</Label>
+            </div>
 
-            {paymentMethod === "card" && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Card Details</CardTitle>
-                    </CardHeader>
+            <div className="flex items-center gap-2">
+              <RadioGroupItem value="cod" id="cod" />
+              <Label htmlFor="cod">Cash on Delivery</Label>
+            </div>
+          </RadioGroup>
+        </CardContent>
+      </Card>
 
-                    <CardContent className="space-y-4">
-                        <div>
-                            <Label>Card Number</Label>
-                            <Input placeholder="1234 5678 9012 3456" />
-                        </div>
+      {/* Dynamic Form */}
+      {paymentMethod && (
+        <Card>
+          <CardHeader>
+            <CardTitle>Enter {paymentMethod.toUpperCase()} Details</CardTitle>
+          </CardHeader>
 
-                        <div className="grid grid-cols-2 gap-4">
-                            <div>
-                                <Label>Expiry Date</Label>
-                                <Input placeholder="MM/YY" />
-                            </div>
+          <CardContent>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {paymentMethod === "card" && (
+                <>
+                  <Input placeholder="Card Number" required />
+                  <div className="grid grid-cols-2 gap-3">
+                    <Input placeholder="MM/YY" required />
+                    <Input placeholder="CVV" required />
+                  </div>
+                </>
+              )}
 
-                            <div>
-                                <Label>CVV</Label>
-                                <Input type="password" placeholder="123" />
-                            </div>
-                        </div>
-                    </CardContent>
-                </Card>
-            )}
+              {paymentMethod === "upi" && (
+                <Input placeholder="name@upi" required />
+              )}
 
-            {paymentMethod === "upi" && (
-                <Card>
-                    <CardHeader>
-                        <CardTitle>UPI Details</CardTitle>
-                    </CardHeader>
+              {paymentMethod === "cod" && (
+                <p className="text-green-600 text-sm">
+                  You will pay on delivery
+                </p>
+              )}
 
-                    <CardContent>
-                        <Label>UPI ID</Label>
-                        <Input placeholder="example@upi" />
-                    </CardContent>
-                </Card>
-            )}
+             {paymentMethod !== "cod" && (
+              <Button type="submit" className="w-full">
+                Pay ₹{total}
+              </Button>
+             )}
+            </form>
+          </CardContent>
+        </Card>
+      )}
 
-            {paymentMethod === "cod" && (
-                <Card>
-                    <CardContent>
-                        <p className="text-sm text-muted-foreground">
-                            You will pay in cash when your order is delivered.
-                        </p>
-                    </CardContent>
-                </Card>
-            )}
-
-            <Card>
-                <CardHeader>
-                    <CardTitle>Order Summary</CardTitle>
-                </CardHeader>
-
-                <CardContent className="space-y-3">
-                    <div className="flex justify-between">
-                        <span>Total Amount</span>
-                        <span className="font-semibold">₹{total}</span>
-                    </div>
-                </CardContent>
-            </Card>
-        </div>
-    )
+      {/* Total */}
+      <Card>
+        <CardContent className="flex justify-between py-6 text-lg">
+          <span>Total</span>
+          <span className="font-bold">₹{total}</span>
+        </CardContent>
+      </Card>
+    </div>
+  );
 }

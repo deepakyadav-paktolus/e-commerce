@@ -1,35 +1,33 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
 import {
   Dialog,
+  DialogTrigger,
   DialogClose,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Field, FieldGroup } from "@/components/ui/field";
+
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useState } from "react";
 import { toast } from "sonner";
 
-export function Payment() {
-  const [method, setMethod] = useState("card");
+type Props = {
+  method: string;
+};
 
+export function Payment({ method }: Props) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    toast.success("Payment successful!");
+    toast.success(`Paid using ${method.toUpperCase()}`);
   };
 
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button>Pay Now</Button>
+        <Button className="w-full mt-4">Pay Now</Button>
       </DialogTrigger>
 
       <DialogContent className="sm:max-w-md">
@@ -38,53 +36,33 @@ export function Payment() {
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          <RadioGroup
-            value={method}
-            onValueChange={setMethod}
-            className="space-y-2"
-          >
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="card" id="card" />
-              <Label htmlFor="card">Card</Label>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <RadioGroupItem value="upi" id="upi" />
-              <Label htmlFor="upi">UPI</Label>
-            </div>
-          </RadioGroup>
+          <p className="text-sm text-gray-500">
+            Selected: <strong>{method.toUpperCase()}</strong>
+          </p>
 
           {method === "card" && (
-            <FieldGroup>
-              <Field>
-                <Label>Card Number</Label>
-                <Input placeholder="1234 5678 9012 3456" required />
-              </Field>
-
+            <>
+              <Input placeholder="Card Number" required />
               <div className="grid grid-cols-2 gap-3">
-                <Field>
-                  <Label>Expiry</Label>
-                  <Input placeholder="MM/YY" required />
-                </Field>
-
-                <Field>
-                  <Label>CVV</Label>
-                  <Input type="password" placeholder="123" required />
-                </Field>
+                <Input placeholder="MM/YY" required />
+                <Input placeholder="CVV" required />
               </div>
-            </FieldGroup>
+            </>
           )}
 
           {method === "upi" && (
-            <Field>
-              <Label>UPI ID</Label>
-              <Input placeholder="name@upi" required />
-            </Field>
+            <Input placeholder="name@upi" required />
+          )}
+
+          {method === "cod" && (
+            <p className="text-sm text-green-600">
+              Cash on Delivery selected
+            </p>
           )}
 
           <DialogFooter>
             <DialogClose asChild>
-              <Button variant="outline">Cancel</Button>
+              <Button variant="destructive">Cancel</Button>
             </DialogClose>
 
             <Button type="submit">Pay</Button>

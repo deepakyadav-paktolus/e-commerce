@@ -32,12 +32,12 @@ export default function ProfilePage() {
   };
 
   const handleSave = () => {
-    console.log("PROFILE DATA:", data);
+    // console.log("PROFILE DATA:", data);
     toast.success("Profile updated successfully!");
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
+    <div className="max-w-3xl min-w-2xl mx-auto p-6 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Profile Information</CardTitle>

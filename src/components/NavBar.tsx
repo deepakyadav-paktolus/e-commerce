@@ -50,20 +50,18 @@ const NavBar = () => {
             <Link href="/">Home</Link>
           </li>
           <li>
-            <Link href="/about">About</Link>
+            <Link href="/profile">Profile</Link>
           </li>
-          <li>
-            <Link href="/products">Products</Link>
-          </li>
+
           <li>
             <Link href="/cart">Cart</Link>
           </li>
-          <li>
+          {/* <li>
             <Link href="/orders">Orders</Link>
-          </li>
-          <li>
+          </li> */}
+          {/* <li>
               <Link href="/checkout">CheckOut</Link>
-            </li>
+            </li> */}
         </ul>
 
         <div className="md:hidden">

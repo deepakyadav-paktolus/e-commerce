@@ -1,69 +1,46 @@
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Separator } from "@/components/ui/separator"
+"use client";
 
-type CartItem = {
-  id: number
-  name: string
-  price: number
-  quantity: number
-}
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { CartItem } from "@/app/context/CartContext";
 
-type CartPageProps = {
-  items: CartItem[]
-  updateQuantity: (id: number, quantity: number) => void
-  removeItem: (id: number) => void
-}
+type Props = {
+  items: CartItem[];
+  updateQuantity: (id: number, qty: number) => void;
+  removeItem: (id: number) => void;
+};
 
-export default function CartPage({
-  items,
-  updateQuantity,
-  removeItem,
-}: CartPageProps) {
-  const total = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0
-  )
-
+export default function CartPage({ items, updateQuantity, removeItem }: Props) {
+  const total = items.reduce((a, b) => a + b.price * b.quantity, 0);
+  const totalFormatted = total.toFixed(2);
   return (
-    <div className="max-w-3xl mx-auto p-6 space-y-6">
+    <div className=" w-2xl">
       <Card>
         <CardHeader>
-          <CardTitle>Your Cart</CardTitle>
+          <CardTitle>Cart Items</CardTitle>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          {items.length === 0 && (
-            <p className="text-muted-foreground text-sm">
-              Your cart is empty.
-            </p>
-          )}
-
+        <CardContent className="">
           {items.map((item) => (
             <div key={item.id} className="space-y-2">
-              <div className="flex justify-between items-center">
+              <div className="flex justify-between">
                 <div>
-                  <p className="font-medium">{item.name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    ₹{item.price}
-                  </p>
+                  <img src={item.image} alt={item.title} className="w-16 h-16 object-contain" />
+                  <p className="font-medium">{item.title}</p>
+                  <p className="text-sm text-muted-foreground">₹{item.price}</p>
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="flex gap-2 items-center">
                   <Input
+                    className="w-16"
                     type="number"
                     min={1}
                     value={item.quantity}
                     onChange={(e) =>
                       updateQuantity(item.id, Number(e.target.value))
                     }
-                    className="w-16"
                   />
 
                   <Button
@@ -82,22 +59,12 @@ export default function CartPage({
         </CardContent>
       </Card>
 
-      <Card>
-        <CardHeader>
-          <CardTitle>Summary</CardTitle>
-        </CardHeader>
-
-        <CardContent className="space-y-4">
-          <div className="flex justify-between">
-            <span>Total</span>
-            <span className="font-semibold">₹{total}</span>
-          </div>
-
-          <Button className="w-full">
-            Proceed to Checkout
-          </Button>
+      <Card className="mt-5">
+        <CardContent className="flex justify-between py-6">
+          <span>Total</span>
+          <span className="font-bold">₹{totalFormatted}</span>
         </CardContent>
       </Card>
     </div>
-  )
+  );
 }
